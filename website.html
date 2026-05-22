@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animewatch - Nonton Streaming Anime Sub Indo</title>
+    <!-- Import Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #a29bfe; 
+            --accent: #6c5ce7;
+            --bg-dark: #0f0c29; 
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f6fa;
+            --text-gray: #a2a2a2;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { 
+            font-size: 24px; font-weight: 800; color: #fff;
+            letter-spacing: -1px;
+            text-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
+        }
+        .logo span { color: var(--primary); }
+
+        .nav-container { display: flex; align-items: center; gap: 40px; }
+
+        nav ul {
+            list-style: none; display: flex;
+            align-items: center;
+            gap: 25px; margin: 0; padding: 0;
+        }
+        nav ul li a { font-weight: 600; font-size: 13px; text-transform: uppercase; opacity: 0.7; cursor: pointer; }
+        nav ul li a:hover { opacity: 1; color: var(--primary); }
+
+        /* Style Dropdown untuk Menu Genre */
+        .dropdown-genre {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 140px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            z-index: 10;
+            margin-top: 10px;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .dropdown-menu a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            opacity: 0.8;
+        }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover {
+            background: var(--accent);
+            color: white;
+            opacity: 1;
+        }
+        .dropdown-genre:hover .dropdown-menu {
+            display: block;
+        }
+
+        .btn-register {
+            background: var(--accent);
+            color: white; padding: 10px 24px; border-radius: 12px;
+            font-weight: 700; font-size: 13px; text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+            border: none; cursor: pointer; transition: 0.3s;
+        }
+        .btn-register:hover { transform: translateY(-2px); background: #8172ff; }
+
+        /* Modal Register */
+        .modal {
+            display: none; position: fixed; z-index: 2000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1e293b; padding: 40px; border-radius: 24px;
+            width: 100%; max-width: 350px; border: 1px solid var(--glass-border);
+            position: relative; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-gray); }
+        .form-group input {
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            color: white; box-sizing: border-box; outline: none;
+        }
+        .btn-submit {
+            width: 100%; padding: 12px; background: var(--accent);
+            border: none; border-radius: 10px; color: white; font-weight: 700;
+            margin-top: 10px; cursor: pointer;
+        }
+
+        /* Anime Grid */
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 25px; }
+        h2 { display: flex; align-items: center; gap: 12px; font-weight: 800; margin-bottom: 30px; margin-top: 50px; }
+        h2::before { content: ""; width: 6px; height: 28px; background: var(--accent); border-radius: 10px; }
+
+        .anime-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 25px;
+        }
+        .anime-card {
+            background: var(--bg-card); border-radius: 16px; overflow: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--glass-border); position: relative;
+        }
+        .anime-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+
+        .thumbnail-wrapper { position: relative; width: 100%; height: 270px; overflow: hidden; }
+        .thumbnail { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .anime-card:hover .thumbnail { transform: scale(1.1); }
+
+        .episode-badge { 
+            position: absolute; top: 12px; left: 12px;
+            background: var(--accent); color: white; padding: 4px 10px;
+            border-radius: 6px; font-size: 11px; font-weight: 800; z-index: 2;
+        }
+
+        .info { padding: 15px; background: linear-gradient(to top, rgba(15, 23, 42, 1), transparent); }
+        .info h3 { font-size: 14px; margin: 5px 0; height: 40px; overflow: hidden; font-weight: 600; }
+
+        /* Style Baru untuk Kontrol Ganti Halaman */
+        .page-content {
+            display: block; /* Secara default tampil */
+        }
+        
+        #genrePage {
+            display: none; /* Sembunyikan halaman genre saat pertama kali buka */
+        }
+
+        /* About Me Section */
+        .about-me {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 60px;
+        }
+        .about-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
+        }
+        .about-content h3 { margin-top: 0; color: var(--primary); font-size: 22px; }
+        .about-content p { font-size: 14px; color: var(--text-gray); margin-bottom: 0; }
+
+        footer {
+            text-align: center; padding: 60px 20px; background: rgba(2, 6, 23, 0.8);
+            margin-top: 80px; color: var(--text-gray); border-top: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .nav-container { flex-direction: column; gap: 15px; }
+            .anime-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .about-me { flex-direction: column; text-align: center; padding: 30px; }
+            nav ul { flex-direction: column; gap: 15px; text-align: center; }
+            .dropdown-menu { position: relative; left: 0; transform: none; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ANIME<span>WATCH</span></div>
+    <div class="nav-container">
+        <nav>
+            <ul>
+                <!-- Menuju Beranda memicu fungsi JavaScript tampilkan halaman utama -->
+                <li><a onclick="showPage('home')">Beranda</a></li>
+                
+                <!-- Menu Genre sekarang memicu fungsi ganti halaman -->
+                <li class="dropdown-genre">
+                    <a onclick="showPage('genre')">Genre ▾</a>
+                    <div class="dropdown-menu">
+                        <a onclick="showPage('genre', 'action-genre')">Action</a>
+                        <a onclick="scrollToGenreFromMenu('comedy-genre')">Comedy</a>
+                        <a onclick="scrollToGenreFromMenu('romance-genre')">Romance</a>
+                    </div>
+                </li>
+                <li><a href="#">Jadwal</a></li>
+            </ul>
+        </nav>
+        <button class="btn-register" onclick="toggleModal()">Register</button>
+    </div>
+</header>
+
+<div class="modal" id="registerModal">
+    <div class="modal-content">
+        <h3 style="text-align:center; margin-top:0;">Register</h3>
+        <form action="#">
+            <div class="form-group"><label>Username</label><input type="text" placeholder="Username..."></div>
+            <div class="form-group"><label>Email</label><input type="email" placeholder="Email..."></div>
+            <div class="form-group"><label>Password</label><input type="password" placeholder="******"></div>
+            <button type="submit" class="btn-submit">Daftar Sekarang</button>
+        </form>
+        <p onclick="toggleModal()" style="text-align:center; font-size:12px; color:var(--text-gray); cursor:pointer; margin-top:15px;">Batal</p>
+    </div>
+</div>
+
+<div class="container">
+    
+    <!-- ================= HALAMAN 1: UTAMA ================= -->
+    <div id="homePage" class="page-content">
+        <h2>Update Terbaru</h2>
+        <div class="anime-grid">
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 12 (END)</div>
+                    <img src="solo.jfif" alt="Solo Leveling" class="thumbnail">
+                </div>
+                <div class="info"><h3>Solo Leveling Season 2</h3></div>
+            </div>
+
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 1116</div>
+                    <img src="onepiece.jpg" alt="One Piece" class="thumbnail">
+                </div>
+                <div class="info"><h3>One Piece</h3></div>
+            </div>
+
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 08</div>
+                    <img src="chain.jfif" alt="Chainsaw Man" class="thumbnail">
+                </div>
+                <div class="info"><h3>Chainsaw Man</h3></div>
+            </div>
+
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 10</div>
+                    <img src="bluelockcover.png" alt="Blue Lock" class="thumbnail">
+                </div>
+                <div class="info"><h3>Blue Lock Season 2</h3></div>
+            </div>
+            
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 01</div>
+                    <img src="bleachcover.jpg" alt="Bleach" class="thumbnail">
+                </div>
+                <div class="info"><h3>Bleach: Thousand-Year Blood War</h3></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= HALAMAN 2: KHUSUS GENRE ================= -->
+    <div id="genrePage" class="page-content">
+        <!-- Genre: Action -->
+        <h2 id="action-genre">Genre: Action</h2>
+        <div class="anime-grid">
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 24</div>
+                    <img src="ampun.jfif" alt="Anime Action" class="thumbnail">
+                </div>
+                <div class="info"><h3>sakamoto days</h3></div>
+            </div>
+        </div>
+
+        <!-- Genre: Comedy -->
+        <h2 id="comedy-genre">Genre: Comedy</h2>
+        <div class="anime-grid">
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 12</div>
+                    <img src="horimiya.png" alt="Anime Comedy" class="thumbnail">
+                </div>
+                <div class="info"><h3>horimiya</h3></div>
+            </div>
+        </div>
+
+        <!-- Genre: Romance -->
+        <h2 id="romance-genre">Genre: Romance</h2>
+        <div class="anime-grid">
+            <div class="anime-card">
+                <div class="thumbnail-wrapper">
+                    <div class="episode-badge">EPS 05</div>
+                    <img src="cok.webp" alt="Anime Romance" class="thumbnail">
+                </div>
+                <div class="info"><h3>kaoru and rin</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section About Me (Tampil di kedua halaman) -->
+    <div class="about-me">
+        <img src="fotobiasa.jpg" alt="Foto Pembuat" class="about-img">
+        <div class="about-content">
+            <h3>About Me</h3>
+            <p>Halo! Saya adalah pengembang di balik proyek Animewatch ini. Saya memiliki semangat tinggi dalam membangun antarmuka web yang modern dan responsif untuk komunitas pecinta anime. Proyek ini dibuat menggunakan teknologi HTML, CSS, dan semangat pantang menyerah.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 <span>Animewatch Premium</span>. Built for Anime Lovers.</p>
+</footer>
+
+<script>
+    // Fungsi bawaan awal untuk membuka/menutup modal register
+    function toggleModal() {
+        const modal = document.getElementById('registerModal');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    }
+    window.onclick = function(e) {
+        const modal = document.getElementById('registerModal');
+        if (e.target == modal) modal.style.display = 'none';
+    }
+
+    // Fungsi Pengendali Navigasi Antar Halaman Gabungan
+    function showPage(pageId, sectionId = null) {
+        // Sembunyikan semua halaman terlebih dahulu
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('genrePage').style.display = 'none';
+
+        if (pageId === 'home') {
+            document.getElementById('homePage').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (pageId === 'genre') {
+            document.getElementById('genrePage').style.display = 'block';
+            
+            // Jika memilih sub-genre spesifik, arahkan scroll-nya ke sana
+            if (sectionId) {
+                setTimeout(() => {
+                    const targetSection = document.getElementById(sectionId);
+                    if (targetSection) targetSection.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    }
+
+    // Helper khusus untuk sub-menu dropdown genre agar otomatis ganti halaman sekaligus scroll
+    function scrollToGenreFromMenu(sectionId) {
+        showPage('genre', sectionId);
+    }
+</script>
+
+</body>
+</html>
